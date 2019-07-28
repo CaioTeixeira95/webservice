@@ -6,6 +6,10 @@ class Pedidos extends Model {
 
 		$sql = " SELECT p.id,
 						p.data,
+						CASE 
+							WHEN p.status = 0 THEN 'Aberto'
+							ELSE 'Encerrado'
+						END status,
 						c.nome,
 						p.total
 				   FROM pedidos p

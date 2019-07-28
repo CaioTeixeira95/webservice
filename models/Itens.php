@@ -18,7 +18,7 @@ class Itens extends Model {
 
 				if ($rentabilidade != 3) {
 
-					if ($this->verificaItem($id_pedido, $id)) {
+					if ($this->verificaItem($id_pedido, $id) == 0) {
 
 						try {
 							
@@ -45,7 +45,7 @@ class Itens extends Model {
 
 							$stmt->execute();
 
-						} catch (Exception $e) {
+						} catch (PDOException $e) {
 							echo "Falhou: " . $e->getMessage();
 						}
 
@@ -116,7 +116,10 @@ class Itens extends Model {
 
 		$stmt->execute();
 
-		return $stmt->rowCount() == 0;
+		$item = $stmt->fetch();
+		$item = $item['item'];
+
+		return $item;
 
 	}
 

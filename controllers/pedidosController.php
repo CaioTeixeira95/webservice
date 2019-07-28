@@ -70,11 +70,13 @@ class pedidosController {
 			$pedido = new Pedidos();
 			$itens 	= new Itens();
 
+			$data = json_decode($data, true);
+
 			if (isset($data['id_pedido']) && !empty($data['id_pedido']) && is_numeric($data['id_pedido'])) {
 				
 				$id_pedido = addslashes($data['id_pedido']);
 
-				if ($pedido->verificaStatus() == 0) {
+				if ($pedido->verificaStatus($id_pedido) == 0) {
 
 					foreach ($data['itens'] as $item) {
 						
@@ -130,6 +132,8 @@ class pedidosController {
 			$pedido = new Pedidos();
 			$itens = new Itens();
 
+			$data = json_decode($data, true);
+
 			if (isset($data['id_pedido']) && !empty($data['id_pedido']) && is_numeric($data['id_pedido'])) {
 				
 				$id_pedido = addslashes($data['id_pedido']);
@@ -138,7 +142,7 @@ class pedidosController {
 				$itens->deleteItens($id_pedido);
 
 				header("Content-Type: application/json");
-				echo json_decode(array(
+				echo json_encode(array(
 					"id_pedido" => $id_pedido,
 					"status" => utf8_encode("Excluído"),
 					"itens" => ""
