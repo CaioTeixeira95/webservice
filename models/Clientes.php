@@ -2,7 +2,7 @@
 
 class Clientes extends Model {
 
-	public function listarTodos() {
+	public function listAll() {
 
 		$sql = "SELECT * FROM clientes";
 		$sql = $this->pdo->query($sql);

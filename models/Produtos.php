@@ -2,7 +2,7 @@
 
 class Produtos extends Model {
 
-	public function listarTodos() {
+	public function listAll() {
 
 		$sql = "SELECT * FROM produtos";
 		$sql = $this->pdo->query($sql);

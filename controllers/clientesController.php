@@ -7,7 +7,7 @@ class clientesController {
 		$clientes = new Clientes();
 
 		header("Content-Type: application/json");
-		echo json_encode($clientes->listarTodos());
+		echo json_encode($clientes->listAll());
 
 	}
 
