@@ -2,6 +2,7 @@
 
 class Produtos extends Model {
 
+	// Lista todos os itens desponíveis para venda
 	public function listAll() {
 
 		$sql = "SELECT * FROM produtos";

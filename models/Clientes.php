@@ -2,6 +2,7 @@
 
 class Clientes extends Model {
 
+	// Lista todos os clientes disponíveis para venda
 	public function listAll() {
 
 		$sql = "SELECT * FROM clientes";

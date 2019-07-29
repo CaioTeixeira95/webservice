@@ -2,6 +2,7 @@
 
 class Pedidos extends Model {
 
+	// Lista todos os pedidos feitos
 	public function listAll() {
 
 		$sql = " SELECT p.id,
@@ -22,6 +23,7 @@ class Pedidos extends Model {
 
 	}
 
+	// Gera um pedido
 	public function addPedido($id_cliente) {
 
 		try {
@@ -43,6 +45,19 @@ class Pedidos extends Model {
 
 	}
 
+	// Encerra um pedido
+	public function encerrarPedido($id) {
+
+		$sql  = "UPDATE pedidos SET status = 1 WHERE id = :id";
+		$stmt = $this->pdo->prepare($sql);
+
+		$stmt->bindValue(":id", $id);
+
+		$stmt->execute();
+
+	}
+
+	// Atualiza o total do pedido
 	public function updateTotal($id_pedido) {
 
 		$sql  = "SELECT SUM(valor * quantidade) AS total FROM pedidos_item WHERE id_pedido = :id_pedido";
@@ -69,6 +84,7 @@ class Pedidos extends Model {
 
 	}
 
+	// Deleta um pedido
 	public function delete($id) {
 
 		$sql  = "DELETE FROM pedidos WHERE id = :id";
@@ -80,6 +96,7 @@ class Pedidos extends Model {
 
 	}
 
+	// Retorna o status de um pedido
 	public function verificaStatus($id) {
 
 		$sql  = "SELECT status FROM pedidos WHERE id = :id";

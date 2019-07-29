@@ -51,7 +51,7 @@ class Itens extends Model {
 
 					}
 					else {
-						$this->updateItem($id_pedido, $id, $valor, $quantidade, $rentabilidade);
+						$this->updateItem($id_pedido, $id, $valor, $quantidade, $rentabilidade, true);
 					}
 
 				}
@@ -62,27 +62,45 @@ class Itens extends Model {
 
 	}
 
-	public function updateItem($id_pedido, $id, $valor, $quantidade, $rentabilidade) {
+	// Altera um item
+	public function updateItem($id_pedido, $id, $valor, $quantidade, $rentabilidade, $incremental) {
 
-		$sql = " UPDATE pedidos_item
-					SET valor = :valor,
-						quantidade = quantidade + :quantidade,
-						rentabilidade = :rentabilidade
-				  WHERE id_produto = :id_produto
-				  	AND id_pedido = :id_pedido";
+		// Incrementa a quantidade
+		if ($incremental) {
+			$inc = "quantidade + :quantidade";
+		}
+		else {
+			$inc = ":quantidade";
+		}
 
-		$stmt = $this->pdo->prepare($sql);
+		if ($rentabilidade == 0) {
+			$rentabilidade = $this->calculaRentabilidade($id, $valor);
+		}
 
-		$stmt->bindValue(":id_pedido", $id_pedido);
-		$stmt->bindValue(":id_produto", $id);
-		$stmt->bindValue(":valor", $valor);
-		$stmt->bindValue(":quantidade", $quantidade);
-		$stmt->bindValue(":rentabilidade", $rentabilidade);
+		if ($rentabilidade != 3) {
+			
+			$sql = " UPDATE pedidos_item
+						SET valor = :valor,
+							quantidade = $inc,
+							rentabilidade = :rentabilidade
+					  WHERE id_produto = :id_produto
+					  	AND id_pedido = :id_pedido";
 
-		$stmt->execute();
+			$stmt = $this->pdo->prepare($sql);
+
+			$stmt->bindValue(":id_pedido", $id_pedido);
+			$stmt->bindValue(":id_produto", $id);
+			$stmt->bindValue(":valor", $valor);
+			$stmt->bindValue(":quantidade", $quantidade);
+			$stmt->bindValue(":rentabilidade", $rentabilidade);
+
+			$stmt->execute();
+
+		}
 
 	}
 
+	// Remove um determinado item de uma venda
 	public function deleteItem($id_pedido, $id) {
 
 		$sql  = "DELETE FROM pedidos_item WHERE id_produto = :id_produto AND id_pedido = :id_pedido";
@@ -95,6 +113,7 @@ class Itens extends Model {
 
 	}
 
+	// Deleta todos os itens de uma venda
 	public function deleteItens($id_pedido) {
 
 		$sql  = "DELETE FROM pedidos_item WHERE id_pedido = :id_pedido";
@@ -106,6 +125,7 @@ class Itens extends Model {
 
 	}
 
+	// Verifica se um item já se encontra em uma venda
 	public function verificaItem($id_pedido, $id) {
 
 		$sql = "SELECT COUNT(*) AS item FROM pedidos_item WHERE id_produto = :id_produto AND id_pedido = :id_pedido";
@@ -123,6 +143,7 @@ class Itens extends Model {
 
 	}
 
+	// Calcula a rentabilidade de um produto
 	public function calculaRentabilidade($id, $preco_venda) {
 
 		$preco_venda = number_format($preco_venda, 2, '.', '');
@@ -132,7 +153,7 @@ class Itens extends Model {
 		if ($preco_venda > $preco_orig) {
 			return 1; // Rentabilidade ótima
 		}
-		else if ($preco_venda >= $desconto) {
+		else if ($preco_venda >= $desconto || $preco_venda == $preco_orig) {
 			return 2; // Rentabilidade boa
 		}
 		else {
@@ -141,6 +162,7 @@ class Itens extends Model {
 
 	}
 
+	// Pega o preço unitário de um produto caso o usuário não informe um valor
 	public function getPrecoUnit($id) {
 
 		$sql  = "SELECT preco_unit FROM produtos WHERE id = :id";
@@ -163,6 +185,7 @@ class Itens extends Model {
 
 	}
 
+	// Pega o múltiplo cadastrado no produto
 	public function getMultiplo($id) {
 
 		$sql  = "SELECT COALESCE(multiplo, 1) AS multiplo FROM produtos WHERE id = :id";

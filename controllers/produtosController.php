@@ -2,6 +2,7 @@
 
 class produtosController {
 
+	// Lista todos os produtos para uma venda
 	public function index() {
 
 		$produtos = new Produtos();
