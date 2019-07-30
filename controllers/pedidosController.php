@@ -14,6 +14,29 @@ class pedidosController {
 		
 	}
 
+	public function itens() {
+
+		$data = file_get_contents("php://input");
+
+		if (!empty($data)) {
+
+			$itens = new Itens();
+
+			$data = json_decode($data, true);
+
+			if (isset($data['id_pedido']) && !empty($data['id_pedido']) && is_numeric($data['id_pedido'])) {
+
+				$id_pedido = addslashes($data['id_pedido']);
+
+				header("Content-Type: application/json");
+				echo json_encode($itens->listarItens($id_pedido));
+
+			}
+
+		}
+
+	}
+
 	// Gera um novo pedido
 	public function add() {
 
@@ -37,7 +60,7 @@ class pedidosController {
 				foreach ($data['itens'] as $item) {
 
 					$id    		= addslashes($item['id']);
-					$valor 		= number_format(addslashes($item['valor']), 2, '.', '');
+					$valor 		= isset($data['valor']) ? addslashes($valor['valor']) : "";
 					$quantidade = addslashes($item['quantidade']);
 
 					$itens->addItem($id_pedido, $id, $valor, $quantidade);
@@ -84,7 +107,7 @@ class pedidosController {
 					foreach ($data['itens'] as $item) {
 						
 						$id    		= addslashes($item['id']);
-						$valor 		= number_format(addslashes($item['valor']), 2, '.', '');
+						$valor 		= isset($data['valor']) ? addslashes($valor['valor']) : "";
 						$quantidade = addslashes($item['quantidade']);
 
 						$itens->addItem($id_pedido, $id, $valor, $quantidade);
@@ -141,7 +164,7 @@ class pedidosController {
 					foreach ($data['itens'] as $item) {
 
 						$id 		= addslashes($item['id']);
-						$valor 		= addslashes($item['valor']);
+						$valor 		= isset($data['valor']) ? addslashes($valor['valor']) : "";
 						$quantidade = addslashes($item['quantidade']);
 
 						$itens->updateItem($id_pedido, $id, $valor, $quantidade, 0, false);
@@ -226,6 +249,7 @@ class pedidosController {
 				$pedido->encerrarPedido($id_pedido);
 			}
 
+			header("Content-Type: application/json");
 			echo json_encode(array(
 				"id_pedido" => $id_pedido,
 				"status" => "Encerrado"

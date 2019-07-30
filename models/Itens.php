@@ -2,9 +2,36 @@
 
 class Itens extends Model {
 
+	// Lista os itens de um determinado pedido
+	public function listarItens($id_pedido) {
+
+		$sql = " SELECT pi.id_produto,
+						p.nome,
+						pi.valor,
+						pi.quantidade,
+						CASE
+							WHEN pi.rentabilidade = 1 THEN 'Rentabilidade Otima'
+							ELSE 'Rentabilidade Boa'
+						END AS rentabilidade
+				   FROM pedidos_item pi
+				   JOIN pedidos pe ON pe.id = pi.id_pedido
+				   LEFT JOIN produtos p ON pi.id_produto = p.id
+				  WHERE pi.id_pedido = :id_pedido
+				  ORDER BY pi.id";
+
+		$stmt = $this->pdo->prepare($sql);
+
+		$stmt->bindValue(":id_pedido", $id_pedido);
+
+		$stmt->execute();
+
+		return $stmt->rowCount() > 0 ? $stmt->fetchAll(PDO::FETCH_ASSOC) : array();
+
+	}
+
 	public function addItem($id_pedido, $id, $valor, $quantidade) {
 
-		if (empty($valor) || $valor <= 0) {
+		if (!isset($valor) || empty($valor) || $valor == "" || $valor <= 0) {
 			$valor = $this->getPrecoUnit($id);
 		}
 
@@ -77,6 +104,10 @@ class Itens extends Model {
 			$rentabilidade = $this->calculaRentabilidade($id, $valor);
 		}
 
+		if (!isset($valor) || empty($valor) || $valor == "" || $valor <= 0) {
+			$valor = $this->getPrecoUnit($id);
+		}
+
 		if ($rentabilidade != 3) {
 			
 			$sql = " UPDATE pedidos_item
@@ -146,7 +177,13 @@ class Itens extends Model {
 	// Calcula a rentabilidade de um produto
 	public function calculaRentabilidade($id, $preco_venda) {
 
-		$preco_venda = number_format($preco_venda, 2, '.', '');
+		if (!isset($preco_venda) || empty($preco_venda) || $preco_venda == "" || $preco_venda <= 0) {
+			$preco_venda = $this->getPrecoUnit($id);
+		}
+		else {
+			$preco_venda = number_format($preco_venda, 2, '.', '');
+		}
+		
 		$preco_orig = $this->getPrecoUnit($id);
 		$desconto = $preco_orig * 0.90;
 

@@ -70,6 +70,24 @@ url: https://backendcaiotest.000webhostapp.com/pedidos/add -> Adiciona um item n
 	],
 }
 
+url: https://backendcaiotest.000webhostapp.com/pedidos/listar -> Lista todos os itens de um pedido (POST):
+
+### Envio
+
+{
+	"id_pedido": 1
+}
+
+### Retorno
+
+{
+	"id_produto": 2,
+	"nome": "X-Wing",
+	"valor": "60000.00",
+	"quantidade": 2,
+	"rentabilidade": "Rentabilidade Boa"
+}
+
 url: https://backendcaiotest.000webhostapp.com/pedidos/addItem -> Adiciona um ou mais itens de um pedido, caso o item já esteja inserido o mesmo será alterado e incrementado com a quantidade enviada (POST):
 
 ### Envio
