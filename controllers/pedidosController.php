@@ -60,7 +60,7 @@ class pedidosController {
 				foreach ($data['itens'] as $item) {
 
 					$id    		= addslashes($item['id']);
-					$valor 		= isset($data['valor']) ? addslashes($valor['valor']) : "";
+					$valor 		= isset($item['valor']) ? $item['valor'] : "";
 					$quantidade = addslashes($item['quantidade']);
 
 					$itens->addItem($id_pedido, $id, $valor, $quantidade);
@@ -107,7 +107,7 @@ class pedidosController {
 					foreach ($data['itens'] as $item) {
 						
 						$id    		= addslashes($item['id']);
-						$valor 		= isset($data['valor']) ? addslashes($valor['valor']) : "";
+						$valor 		= isset($item['valor']) ? $item['valor'] : "";
 						$quantidade = addslashes($item['quantidade']);
 
 						$itens->addItem($id_pedido, $id, $valor, $quantidade);
@@ -164,7 +164,7 @@ class pedidosController {
 					foreach ($data['itens'] as $item) {
 
 						$id 		= addslashes($item['id']);
-						$valor 		= isset($data['valor']) ? addslashes($valor['valor']) : "";
+						$valor 		= isset($item['valor']) ? $item['valor'] : "";
 						$quantidade = addslashes($item['quantidade']);
 
 						$itens->updateItem($id_pedido, $id, $valor, $quantidade, 0, false);

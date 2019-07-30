@@ -183,7 +183,7 @@ class Itens extends Model {
 		else {
 			$preco_venda = number_format($preco_venda, 2, '.', '');
 		}
-		
+
 		$preco_orig = $this->getPrecoUnit($id);
 		$desconto = $preco_orig * 0.90;
 
