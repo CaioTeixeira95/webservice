@@ -70,7 +70,7 @@ url: https://backendcaiotest.000webhostapp.com/pedidos/add -> Adiciona um item n
 	],
 }
 
-url: https://backendcaiotest.000webhostapp.com/pedidos/listar -> Lista todos os itens de um pedido (POST):
+url: https://backendcaiotest.000webhostapp.com/pedidos/itens -> Lista todos os itens de um pedido (POST):
 
 ### Envio
 
